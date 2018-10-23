@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Practica 1</string>
+    <string name="main_description">Mobile Services</string>
+    <string name="login_pass">Password</string>
+    <string name="fragment_button_connect">Login</string>
+    <string name="fragment_auth_user">User</string>
+    <string name="login_hint_user">Write your user</string>
+    <string name="login_hint_pass">Write your key</string>
+    <string name="login_ip">Direction</string>
+    <string name="lagin_port">Port</string>
+    <string name="login_hint_ip">IP address or domain</string>
+    <string name="login_hint_port">Port TCP server</string>
+</resources>

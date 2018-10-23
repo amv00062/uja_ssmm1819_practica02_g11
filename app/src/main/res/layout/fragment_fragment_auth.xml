@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_auth_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/main_padding"
+    tools:context=".FragmentAuth">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!-- TODO: Update blank fragment layout -->
+        <TextView
+            android:id="@+id/fragment_auth_label_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/fragment_auth_user"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="@color/colorLetras"
+            android:textSize="28sp" />
+
+        <EditText
+            android:id="@+id/fragment_auth_edit_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/fragment_auth_edit_pass"
+            android:layout_alignTop="@+id/fragment_auth_label_user"
+            android:ems="10"
+            android:hint="@string/login_hint_user"
+            android:inputType="text" />
+
+
+        <TextView
+            android:id="@+id/fragment_auth_label_pass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fragment_auth_label_user"
+            android:layout_alignStart="@+id/fragment_auth_label_user"
+            android:text="@string/login_pass"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="@color/colorLetras"
+            android:textSize="28sp" />
+
+        <EditText
+            android:id="@+id/fragment_auth_edit_pass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fragment_auth_label_user"
+            android:layout_toEndOf="@+id/fragment_auth_label_ip"
+            android:ems="10"
+            android:hint="@string/login_hint_pass"
+            android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/fragment_auth_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/fragment_auth_label_port"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/fragment_button_connect" />
+
+        <TextView
+            android:id="@+id/fragment_auth_label_ip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fragment_auth_label_pass"
+            android:layout_alignStart="@+id/fragment_auth_label_user"
+            android:text="@string/login_ip"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="@color/colorLetras"
+            android:textSize="28sp" />
+
+        <EditText
+            android:id="@+id/fragment_auth_edit_ip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fragment_auth_label_pass"
+            android:layout_toEndOf="@+id/fragment_auth_label_ip"
+            android:ems="10"
+            android:hint="@string/login_hint_ip"
+            android:inputType="text|textPersonName" />
+
+        <TextView
+            android:id="@+id/fragment_auth_label_port"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fragment_auth_label_ip"
+            android:layout_alignStart="@+id/fragment_auth_label_user"
+            android:text="@string/lagin_port"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="@color/colorLetras"
+            android:textSize="28sp" />
+
+        <EditText
+            android:id="@+id/fragment_auth_edit_port"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fragment_auth_label_ip"
+            android:layout_alignStart="@+id/fragment_auth_edit_name"
+            android:ems="10"
+            android:hint="@string/login_hint_port"
+            android:inputType="textPersonName|number" />
+    </RelativeLayout>
+</ScrollView>
