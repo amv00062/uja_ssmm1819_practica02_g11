@@ -1,4 +1,4 @@
-package es.ujaen.labtelema.practica1;
+package es.ujaen.labtelema.festivalsUJA;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

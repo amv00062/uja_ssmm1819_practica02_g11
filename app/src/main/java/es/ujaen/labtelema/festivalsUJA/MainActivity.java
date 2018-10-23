@@ -1,16 +1,23 @@
-package es.ujaen.labtelema.practica1;
+package es.ujaen.labtelema.festivalsUJA;
 
-import android.os.TokenWatcher;
+import android.os.Trace;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.URL;
 
 import data.UserData;
 
@@ -63,6 +70,39 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
 
     @Override
     public void onFragmentInteraction(UserData udata) {
+/*
+        new Trace(new Runnable()){
+            @Override
+            public void run(){
+                try{
+                    URL url = new URL(udata.getDomain());
+                    HttpURLConnection connection =(HttpURLConnection) url.openConnection();
+
+                    Socket socket =new Socket("www4.ujaen.es", 80);
+                    DataOutputStream dataOutputStream = DataOutputStream (connection.getOutputStream());
+                    dataOutputStream.writeUTF("Get /~jccuevas/ssmm/autentica.php?user=user1&pass=12345/ HTTP/1.1\r\nhost:www4.ujaen.es\r\n");
+                    dataOutputStream.flush();
+
+                    BufferedReader bit;
+                    bit=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+
+                    String datos= bit.readLine();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),datos,Toast,)
+                        }
+                    });
+
+
+                }catch (MalformedURLException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+*/
+
 
         this.ud.setDomain(udata.getDomain());
         changetitle(ud.getDomain());

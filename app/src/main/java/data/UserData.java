@@ -6,6 +6,8 @@ public class UserData {
     String password="";
     String domain="";
     short port=0;
+    String id;
+
 
     /**
      * Constructor por defecto con los valores de labtelema.ujaen.es:80
