@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
                 //DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
                 Socket socket = new Socket(userData[0].getDomain(),userData[0].getPort());
                 DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                dataOutputStream.writeUTF("GET /~jccuevas/ssmm/login.php?user=user1&pass=12341234 HTTP/1.1\r\nhost:www4.ujaen.es\r\n\r\n");
+                dataOutputStream.writeUTF("GET /~jccuevas/ssmm/login.php?user=user1&pass=12345 HTTP/1.1\r\nhost:www4.ujaen.es\r\n\r\n");
                 dataOutputStream.flush();
                 StringBuilder sb = new StringBuilder();
                 BufferedReader bis;
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
                     sb.append(line);
                     publishProgress(line.length());
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -147,13 +147,13 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
             }
             return null;
         }
-
+/*
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
             Toast.makeText(getApplicationContext(),getString(R.string.main_progress)+" "+String.valueOf(values[0]),Toast.LENGTH_LONG).show();
         }
-
+*/
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
