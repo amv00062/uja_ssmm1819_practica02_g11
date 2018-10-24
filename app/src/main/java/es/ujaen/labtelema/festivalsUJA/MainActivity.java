@@ -12,12 +12,18 @@ import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
+import java.net.URLConnection;
+
+import android.app.Activity;
+import android.os.AsyncTask;
 
 import data.UserData;
 
@@ -70,41 +76,46 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
 
     @Override
     public void onFragmentInteraction(UserData udata) {
-/*
-        new Trace(new Runnable()){
-            @Override
-            public void run(){
-                try{
-                    URL url = new URL(udata.getDomain());
-                    HttpURLConnection connection =(HttpURLConnection) url.openConnection();
-
-                    Socket socket =new Socket("www4.ujaen.es", 80);
-                    DataOutputStream dataOutputStream = DataOutputStream (connection.getOutputStream());
-                    dataOutputStream.writeUTF("Get /~jccuevas/ssmm/autentica.php?user=user1&pass=12345/ HTTP/1.1\r\nhost:www4.ujaen.es\r\n");
-                    dataOutputStream.flush();
-
-                    BufferedReader bit;
-                    bit=new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-
-                    String datos= bit.readLine();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(),datos,Toast,)
-                        }
-                    });
-
-
-                }catch (MalformedURLException e){
-                    e.printStackTrace();
-                }
-            }
-        }
-*/
-
-
         this.ud.setDomain(udata.getDomain());
         changetitle(ud.getDomain());
+        ConnectTask task = new ConnectTask();
+        task.execute(udata);
+    }
+    public String readServer(UserData udata){
+        try {
+            //URL url = new URL(domain);
+            //HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            //DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
+            Socket socket = new Socket(udata.getDomain(),udata.getPort());
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            dataOutputStream.writeUTF("GET /~jccuevas/ssmm/login.php?user=user1&pass=12341234 HTTP/1.1\r\nhost:www4.ujaen.es\r\n\r\n");
+            dataOutputStream.flush();
+            StringBuilder sb = new StringBuilder();
+            BufferedReader bis;
+            bis = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String line = "";
+            while((line = bis.readLine())!=null) {
+                sb.append(line);
+            }
+            final String datos= sb.toString();
+            return datos;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    class ConnectTask extends AsyncTask<UserData,Integer,String> {
+        @Override
+        protected String doInBackground(UserData... userData) {
+            return readServer(userData[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+        }
     }
 }

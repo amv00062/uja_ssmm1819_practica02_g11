@@ -1,12 +1,15 @@
 package data;
 
+import java.util.Date;
+
 public class UserData {
 
     String userName="";
     String password="";
     String domain="";
     short port=0;
-    String id;
+    String sid="";
+    Date expires;
 
 
     /**
