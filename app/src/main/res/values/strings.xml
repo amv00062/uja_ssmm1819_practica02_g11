@@ -26,4 +26,9 @@
     <string name="main_connecting">Conectando...</string>
     <string name="main_connected">Conectado</string>
     <string name="main_progress">Progreso</string>
+    <string name="fragment_auth_doing">Autenticando:</string>
+    <string name="fragment_auth_userdefault">user1</string>
+    <string name="fragment_auth_passdefault">12345</string>
+    <string name="fragment_auth_domaindefault">labtelema.ujaen.es</string>
+    <string name="fragment_auth_portdefault">80</string>
 </resources>

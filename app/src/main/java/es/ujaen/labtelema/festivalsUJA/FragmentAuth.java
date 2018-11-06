@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import data.UserData;
 
@@ -95,14 +96,14 @@ public class FragmentAuth extends Fragment {
                     temp = 80;
                 }
                 userData = new UserData(s_user, s_pass, s_domain, temp);
-                //Toast.makeText(getActivity(), s_user + " " + s_pass + " " + s_domain + " " + s_port, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.fragment_auth_doing) +s_user + " " + s_pass + " " + s_domain + " " + s_port, Toast.LENGTH_LONG).show();
 
-                Intent intent = new Intent(getActivity(),ServiceActivity.class);
-                intent.putExtra(ServiceActivity.PARAMETER_USER,s_user);
-                intent.putExtra("pass",s_pass);
-                intent.putExtra("domain",s_domain);
-                intent.putExtra("port",s_port);
-                //startActivity(intent);
+//                Intent intent = new Intent(getActivity(),ServiceActivity.class);
+//                intent.putExtra(ServiceActivity.PARAMETER_USER,s_user);
+//                intent.putExtra("pass",s_pass);
+//                intent.putExtra("domain",s_domain);
+//                intent.putExtra("port",s_port);
+//                startActivity(intent);
                 mListener.onFragmentInteraction(userData);
             }
         });

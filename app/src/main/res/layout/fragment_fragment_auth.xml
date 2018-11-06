@@ -34,7 +34,8 @@
             android:layout_alignTop="@+id/fragment_auth_label_user"
             android:ems="10"
             android:hint="@string/login_hint_user"
-            android:inputType="text" />
+            android:inputType="text"
+            android:text="@string/fragment_auth_userdefault" />
 
 
         <TextView
@@ -56,7 +57,8 @@
             android:layout_toEndOf="@+id/fragment_auth_label_ip"
             android:ems="10"
             android:hint="@string/login_hint_pass"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:text="@string/fragment_auth_passdefault" />
 
         <Button
             android:id="@+id/fragment_auth_button"
@@ -86,7 +88,8 @@
             android:layout_toEndOf="@+id/fragment_auth_label_ip"
             android:ems="10"
             android:hint="@string/login_hint_ip"
-            android:inputType="text|textPersonName" />
+            android:inputType="text|textPersonName"
+            android:text="@string/fragment_auth_domaindefault" />
 
         <TextView
             android:id="@+id/fragment_auth_label_port"
@@ -107,6 +110,7 @@
             android:layout_alignStart="@+id/fragment_auth_edit_name"
             android:ems="10"
             android:hint="@string/login_hint_port"
-            android:inputType="textPersonName|number" />
+            android:inputType="textPersonName|number"
+            android:text="@string/fragment_auth_portdefault" />
     </RelativeLayout>
 </ScrollView>
