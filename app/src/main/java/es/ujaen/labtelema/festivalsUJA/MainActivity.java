@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -33,6 +35,14 @@ import data.UserData;
 
 //
 public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFragmentInteractionListener {
+
+    public static final String PREFS_PORT = "port";
+    private static final String DEBUG_TAG = "HTTP";
+    public static final String STATUS_DOMAIN = "domain";
+    public static final String PREFS_DOMAIN = "domain";
+    public static final String PREFS_USER = "user";
+    ConnectTask mTask = null;
+
 
     private UserData ud=null;
     @Override
@@ -50,28 +60,31 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
             ft.commit();
         } else
             Toast.makeText(this,getString(R.string.mainactivity_fragmentepresent), Toast.LENGTH_SHORT).show();
-
-       if(savedInstanceState!=null){
-           String domain = savedInstanceState.getString("domain");
-           ud = new UserData();
-           ud.setDomain(domain);
+        SharedPreferences sf = getPreferences(MODE_PRIVATE);
+        String nombre = sf.getString("USER","");
+        String expires = sf.getString("EXPIRES","");
+        if(nombre!="" && expires!=""){
+            //TODO Control de sesión
+            Toast.makeText(this,"Bienvenido "+nombre, Toast.LENGTH_LONG).show();
+            //TODO comprobar si expires > momento actual
+            //Si es mayor -> abro actividad (sesión válida)
+            // ----> startActivity()
+            //Si es menor -> la sesión ha caducado
 
        }
-       else {
-           ud = new UserData();
 
-       }
-
-        changetitle(ud.getDomain());
-    }
-
-    public void changetitle(String title){
-        TextView tuser = findViewById(R.id.main_apptitle);
-        tuser.setText(title);
 
     }
 
     @Override
+    //TODO no se si hace falta
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    //TODO no se si es necesario
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -195,6 +208,12 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
                 intent.putExtra(ServiceActivity.PARAMETER_EXPIRED,userData.getExpires());
                 startActivity(intent);
             }else{
+                SharedPreferences sp = getSharedPreferences(userData.getUserName(),MODE_PRIVATE);
+                SharedPreferences.Editor editor= sp.edit();
+                editor.putString("USER",userData.getUserName());
+                editor.putString("SID","");
+                editor.putString("EXPIRES","");
+                editor.commit();
                 Toast.makeText(getApplicationContext(),"Autenticación error",Toast.LENGTH_LONG).show();
             }
 
@@ -255,6 +274,47 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
         }
         return null;
     }
+
+    //TODO download url
+    private String downloadURL (String domain, String user, String pass) throws IOException {
+        InputStream is = null;
+        String result = "";
+
+        HttpURLConnection conect = null;
+
+        try {
+            String contentAsString = "";
+            String tempString = "";
+            String url = "http://" + domain + "/ssmm/autentica.php" + "?user=" + user + "&pass=" + pass;
+            URL service_url = new URL(url);
+            System.out.println("Abriendo conexión: " + service_url.getHost()
+                    + " puerto=" + service_url.getPort());
+            conect.connect();
+            final int response = conect.getResponseCode();
+            final int contentLength = conect.getHeaderFieldInt("Content-length", 1000);
+            String mimeType = conect.getHeaderField("Content-Type");
+            String encoding = mimeType.substring(mimeType.indexOf(";"));
+            Log.d(DEBUG_TAG, "The response is: " + response);
+            is = conect.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            while ((tempString = br.readLine()) != null) {
+                contentAsString = contentAsString + tempString;
+                //task.onProgressUpdate(contentAsString.length());
+            }
+
+        } catch (MalformedURLException mex) {
+            result = "URL mal formateada: " + mex.getMessage();
+            System.out.println(result);
+        } catch (IOException e) {
+            result = "Excepción: " + e.getMessage();
+            System.out.println(result);
+        }
+        return result;
+    }
+
+
+
+
     class ConnectTask extends AsyncTask<UserData,Integer,String> {
 
         @Override
@@ -265,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
         }
 
         @Override
-        protected String doInBackground(UserData... userData) {
+        protected String doInBackground(UserData... userData) {//TODO
             try {
                 //URL url = new URL(domain);
                 //HttpURLConnection connection = (HttpURLConnection) url.openConnection();

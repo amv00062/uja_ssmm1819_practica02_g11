@@ -29,6 +29,6 @@
     <string name="fragment_auth_doing">Autenticando:</string>
     <string name="fragment_auth_userdefault">user1</string>
     <string name="fragment_auth_passdefault">12345</string>
-    <string name="fragment_auth_domaindefault">labtelema.ujaen.es</string>
+    <string name="fragment_auth_domaindefault">www4.ujaen.es</string>
     <string name="fragment_auth_portdefault">80</string>
 </resources>
