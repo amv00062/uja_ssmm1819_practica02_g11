@@ -144,8 +144,6 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
             if(userData!=null){
                 data=userData[0];
 
-
-                //TODO hacer la conexión y la autenticación
                 //A partir de ejemplos tema 3 del github
 
                 String service ="http://"+data.getDomain()+":"+data.getPort()+RESOURCE+"?"
@@ -183,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
                         br.close();
                         is.close();
 
-                        //}else data=null; // TODO COMPROBAR SI HACE FALTA O NO*********
+                        //}else data=null;
                     }connection.disconnect();//del profesor
 
                 } catch (MalformedURLException e) {
@@ -194,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
                 }
 
                 finally {
-                    return result;//TODO CAMBIADO DATA POR RESULT
+                    return result;
                 }
 
 

@@ -9,7 +9,7 @@ public class UserData {
     private String domain="";
     private short port=0;
     private String sid="";
-    private Date expires;
+    private String expires;
 
     public String getPassword() {
         return password;
@@ -23,11 +23,11 @@ public class UserData {
         this.sid = sid;
     }
 
-    public Date getExpires() {
+    public String getExpires() {
         return expires;
     }
 
-    public void setExpires(Date expires) {
+    public void setExpires(String expires) {
         this.expires = expires;
     }
 
