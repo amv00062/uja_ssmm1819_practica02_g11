@@ -35,7 +35,7 @@ public class UserData {
      * Constructor por defecto con los valores de labtelema.ujaen.es:80
      */
     public UserData(){
-        userName="user";
+        userName="user1";
         password="12345";
         domain="labtelema.ujaen.es";
         port=80;

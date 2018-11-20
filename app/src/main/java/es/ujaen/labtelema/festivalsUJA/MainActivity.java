@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
@@ -27,11 +28,16 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.app.Activity;
 import android.os.AsyncTask;
 
+
 import data.UserData;
+import data.Preferences;
 
 //
 public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFragmentInteractionListener {
@@ -49,7 +55,10 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //TODO Añadir algo aquí
+
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+
         Log.d("ARRANCANDO","La aplicación móvil se está iniciando");
         FragmentManager fm = getSupportFragmentManager();
         Fragment temp = fm.findFragmentById(R.id.main_container);
@@ -63,13 +72,26 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
         SharedPreferences sf = getPreferences(MODE_PRIVATE);
         String nombre = sf.getString("USER","");
         String expires = sf.getString("EXPIRES","");
+        String sid = sf.getString("SDI","");
         if(nombre!="" && expires!=""){
-            //TODO Control de sesión
+            //Control de sesión
             Toast.makeText(this,"Bienvenido "+nombre, Toast.LENGTH_LONG).show();
-            //TODO comprobar si expires > momento actual
-            //Si es mayor -> abro actividad (sesión válida)
-            // ----> startActivity()
-            //Si es menor -> la sesión ha caducado
+
+
+            SimpleDateFormat sdf= new SimpleDateFormat("y-M-d-H-m-s");
+            Date epirationDate=sdf.parse(expires,new ParsePosition(0));
+            Date horaactual= new Date(System.currentTimeMillis());
+
+            if(epirationDate.getTime()>horaactual.getTime()){
+                //Autenticar de forma transparente
+                Intent intent=new Intent (this,ServiceActivity.class);
+                intent.putExtra(ServiceActivity.PARAMETER_USER,nombre);
+                intent.putExtra(ServiceActivity.PARAMETER_EXPIRED, expires);
+                intent.putExtra(ServiceActivity.PARAMETER_SID,sid);
+                startActivity(intent);
+            }else{
+                Toast.makeText(this,"La sesión ha caducado", Toast.LENGTH_LONG).show();
+            }
 
        }
 
@@ -141,19 +163,19 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
                     connection.connect();
 
                     int code =connection.getResponseCode();
-                    if(code==CODE_HTTP_OK){
-                        InputStreamReader is =new InputStreamReader(connection.getInputStream());
-                        BufferedReader br= new BufferedReader(is);
-                        String line="";
+                    if(code==CODE_HTTP_OK) {
+                        InputStreamReader is = new InputStreamReader(connection.getInputStream());
+                        BufferedReader br = new BufferedReader(is);
+                        String line = "";
 
                         //El siguiente código trocea la información que recibe de la url
-                        while ((line=br.readLine())!=null){
-                            if(line.startsWith("SESSION-ID=")){
-                                String parts[]=line.split("&");
+                        while ((line = br.readLine()) != null) {
+                            if (line.startsWith("SESSION-ID=")) {
+                                String parts[] = line.split("&");
 
-                                if(parts.length==2){//Solo debe recibir una respuesta que tenga dos partes
-                                    if(parts[1].startsWith("EXPIRES=")){
-                                        result=processSession(data,parts[0],parts[1]);
+                                if (parts.length == 2) {//Solo debe recibir una respuesta que tenga dos partes
+                                    if (parts[1].startsWith("EXPIRES=")) {
+                                        result = processSession(data, parts[0], parts[1]);
                                     }
                                 }
                             }
@@ -161,7 +183,8 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
                         br.close();
                         is.close();
 
-                    }else data=null;
+                        //}else data=null; // TODO COMPROBAR SI HACE FALTA O NO*********
+                    }connection.disconnect();//del profesor
 
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
@@ -171,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
                 }
 
                 finally {
-                    return data;
+                    return result;//TODO CAMBIADO DATA POR RESULT
                 }
 
 
@@ -202,7 +225,8 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
 //                edit2.commit();
 
 
-                Intent intent =new Intent(getApplicationContext(),ServiceActivity.class);
+                //Intent intent =new Intent(getApplicationContext(),ServiceActivity.class);
+                Intent intent=new Intent (MainActivity.this,ServiceActivity.class);
                 intent.putExtra(ServiceActivity.PARAMETER_USER,userData.getUserName());
                 intent.putExtra(ServiceActivity.PARAMETER_SID,userData.getSid());
                 intent.putExtra(ServiceActivity.PARAMETER_EXPIRED,userData.getExpires());
@@ -231,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
 
         protected UserData processSession (UserData input, String session, String expires){
 
-            session =session.substring(session.indexOf("="),session.length());
+            session =session.substring(session.indexOf("=")+1,session.length());
             expires =expires.substring(expires.indexOf("=")+1,expires.length());
             input.setSid(session);
             //TODO convertir fecha a formato DATE
@@ -248,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
 
 
 
-
+/*
     public String readServer(UserData udata){
         try {
             //URL url = new URL(domain);
@@ -274,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
         }
         return null;
     }
-
+*/
     //TODO download url
     private String downloadURL (String domain, String user, String pass) throws IOException {
         InputStream is = null;
@@ -289,6 +313,13 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
             URL service_url = new URL(url);
             System.out.println("Abriendo conexión: " + service_url.getHost()
                     + " puerto=" + service_url.getPort());
+            conect =(HttpURLConnection) service_url.openConnection();
+            //añadido para pruebas
+            conect.setReadTimeout(10000 /* miliseconds */);
+            conect.setConnectTimeout(15000 /*miliseconds*/);
+            conect.setRequestMethod("GET");
+            conect.setDoInput(true);
+                    //hasta aqui
             conect.connect();
             final int response = conect.getResponseCode();
             final int contentLength = conect.getHeaderFieldInt("Content-length", 1000);
@@ -302,13 +333,22 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
                 //task.onProgressUpdate(contentAsString.length());
             }
 
+            return contentAsString;
+
         } catch (MalformedURLException mex) {
             result = "URL mal formateada: " + mex.getMessage();
             System.out.println(result);
         } catch (IOException e) {
             result = "Excepción: " + e.getMessage();
             System.out.println(result);
+        }finally{
+            if(is != null){
+                is.close();
+                conect.disconnect();
+            }
         }
+
+
         return result;
     }
 
@@ -325,44 +365,21 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
         }
 
         @Override
-        protected String doInBackground(UserData... userData) {//TODO
+        protected String doInBackground(UserData... userData) {
             try {
-                //URL url = new URL(domain);
-                //HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                //DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
-                Socket socket = new Socket(userData[0].getDomain(),userData[0].getPort());
-                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                dataOutputStream.writeUTF("GET /~jccuevas/ssmm/login.php?user=user1&pass=12345 HTTP/1.1\r\nhost:www4.ujaen.es\r\n\r\n");
-                dataOutputStream.flush();
-                StringBuilder sb = new StringBuilder();
-                BufferedReader bis;
-                bis = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String line = "";
-                while((line = bis.readLine())!=null) {
-                    sb.append(line);
-                    publishProgress(line.length());
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                final String datos= sb.toString();
-                return datos;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+                String url = "http://" + userData[0].getDomain();
+                return downloadURL(url, userData[0].getUserName(), userData[0].getPassword());
             } catch (IOException e) {
                 e.printStackTrace();
+                return null;
             }
-            return null;
         }
-/*
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
             Toast.makeText(getApplicationContext(),getString(R.string.main_progress)+" "+String.valueOf(values[0]),Toast.LENGTH_LONG).show();
         }
-*/
+
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
