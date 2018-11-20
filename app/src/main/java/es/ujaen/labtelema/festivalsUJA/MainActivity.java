@@ -99,19 +99,11 @@ public class MainActivity extends AppCompatActivity implements FragmentAuth.OnFr
     }
 
     @Override
-    //TODO no se si hace falta
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    //TODO no se si es necesario
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putString("domain",ud.getDomain());
-    }
 
     @Override
     public void onFragmentInteraction(UserData udata) {
